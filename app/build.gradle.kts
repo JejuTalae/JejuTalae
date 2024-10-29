@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.map.sdk)
     implementation(libs.naver.map.location)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

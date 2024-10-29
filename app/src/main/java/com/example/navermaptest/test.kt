@@ -62,7 +62,7 @@ fun BusStopItem(busStop: BusStop, isFirst: Boolean, isLast: Boolean) {
             .height(60.dp)
             .background(Color(0xFFFFFFFF))
             .padding(start = 10.dp)
-            ,
+        ,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(

@@ -14,8 +14,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NaverMapTestTheme {
-                //LocationTrackingScreen()
-                BusStopScreen()
+                    MainScreen()
                 }
             }
         }

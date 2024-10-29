@@ -38,9 +38,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 
 @Composable
-fun BusStopScreen(viewModel: BusStopViewModel = viewModel()) {
+fun BusStopScreen(viewModel: BusStopViewModel = viewModel(), navController: NavController) {
     var busNumber by remember { mutableStateOf("") }
     val busStops by viewModel.busStops.observeAsState(initial = emptyList())
     val errorMessage by viewModel.errorMessage.observeAsState(initial = "")

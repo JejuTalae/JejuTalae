@@ -34,6 +34,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.navermaptest.ui.theme.Typography
+
 
 @Composable
 fun TopSearchBar(modifier: Modifier = Modifier) {
@@ -41,7 +43,7 @@ fun TopSearchBar(modifier: Modifier = Modifier) {
     var text2 by remember { mutableStateOf("오설록 티 뮤지엄") }
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .dropShadow(
                 shape = RectangleShape,
@@ -77,6 +79,7 @@ fun TopSearchBar(modifier: Modifier = Modifier) {
                     unfocusedIndicatorColor = Color.Unspecified,
                     disabledIndicatorColor = Color.Unspecified,
                 ),
+                textStyle = Typography.labelSmall.copy(color = Color.Black),
                 trailingIcon = {
                     Icon(imageVector = ImageVector.vectorResource(R.drawable.delevesvg),
                         contentDescription = null,
@@ -99,6 +102,7 @@ fun TopSearchBar(modifier: Modifier = Modifier) {
                     unfocusedIndicatorColor = Color.Unspecified,
                     disabledIndicatorColor = Color.Unspecified,
                 ),
+                textStyle = Typography.labelSmall.copy(color = Color.Black),
                 trailingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.location),

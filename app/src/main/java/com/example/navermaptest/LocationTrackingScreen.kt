@@ -1,19 +1,27 @@
 package com.example.navermaptest
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -24,6 +32,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.example.navermaptest.ui.theme.Typography
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.LocationTrackingMode
 import com.naver.maps.map.compose.MapProperties
@@ -32,16 +42,17 @@ import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.compose.rememberFusedLocationSource
 
-@OptIn(ExperimentalNaverMapApi::class)
+@OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun LocationTrackingScreen() {
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding(),
-        topBar = {
-            TopSearchBar()
-        }
+fun LocationTrackingScreen(navController: NavHostController) {
+    BottomSheetScaffold(modifier = Modifier
+        .fillMaxSize()
+        , topBar = {
+        TopSearchBar(modifier = Modifier.statusBarsPadding())
+    }, sheetContent = {
+        BottomSheetContent(modifier = Modifier.navigationBarsPadding(), navController = navController)
+    },
+        sheetPeekHeight = 100.dp
     ) { contentPadding ->
         Column(modifier = Modifier.padding(contentPadding)) {
             val options = listOf(
@@ -73,12 +84,14 @@ fun LocationTrackingScreen() {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
-                            selected = selectedOption == index,
-                            onClick = null
+                            selected = selectedOption == index, onClick = null,
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = Color.Black,
+                                unselectedColor = Color.Black
+                            )
                         )
                         Text(
-                            text = text,
-                            modifier = Modifier.padding(start = 8.dp)
+                            text = text, modifier = Modifier.padding(start = 8.dp)
                         )
                     }
                 }
@@ -92,8 +105,8 @@ fun LocationTrackingScreen() {
                 else -> throw IllegalStateException()
             }
             val isCompassEnabled = when (locationTrackingMode) {
-                LocationTrackingMode.Follow,
-                LocationTrackingMode.Face -> true
+                LocationTrackingMode.Follow, LocationTrackingMode.Face -> true
+
                 else -> false
             }
             val cameraPositionState = rememberCameraPositionState()
@@ -103,8 +116,7 @@ fun LocationTrackingScreen() {
                     isCompassEnabled = isCompassEnabled,
                 ),
                 properties = MapProperties(
-                    locationTrackingMode = locationTrackingMode,
-                    isTransitLayerGroupEnabled = true
+                    locationTrackingMode = locationTrackingMode, isTransitLayerGroupEnabled = true
                 ),
                 uiSettings = MapUiSettings(
                     isLocationButtonEnabled = true,
@@ -117,5 +129,28 @@ fun LocationTrackingScreen() {
                 },
             )
         }
-    } 
+    }
+}
+
+@Composable
+fun BottomSheetContent(modifier : Modifier = Modifier, navController: NavHostController) {
+    Column(modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("선택된 정류소 이름", style = Typography.titleLarge)
+        Spacer(modifier = Modifier.height(10.dp))
+        Text("방향 명시 ex) [북] 방면", style = Typography.labelSmall)
+        Spacer(modifier = Modifier.height(15.dp))
+        Row() {
+            Button(onClick = { navController.navigate("busStop") }, border = BorderStroke(2.dp, Color(0xff41C3E7))) {
+                Text("  출발  ", style = Typography.labelSmall.copy(color = Color(0xff41C3E7)))
+            }
+            Spacer(modifier = Modifier.width(20.dp))
+            Button(onClick = { /*TODO*/ }, border = BorderStroke(2.dp, Color(0xff41C3E7)),
+                 colors = ButtonDefaults.buttonColors(
+                     containerColor = Color(0xff41C3E7)
+                )){
+                Text("  도착  ", style = Typography.labelSmall.copy(color = Color.White))
+            }
+        }
+    }
 }

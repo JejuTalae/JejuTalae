@@ -14,21 +14,33 @@ val Typography = Typography(
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
+    ), // MaterialTheme 기본 TextStyle 일것으로 예상됨.
     titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
+        fontFamily = nanumbarungothic,
+        fontWeight = FontWeight.Bold,
+        fontSize = 25.sp,
+        lineHeight = 28.sp,
+        letterSpacing = 0.sp
+    ), // Bold 25.sp (large)
+    titleMedium = TextStyle(
+        fontFamily = nanumbarungothic,
+        fontWeight = FontWeight.Bold,
         fontSize = 22.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
-    ),
+    ), // Bold 22.sp (medium)
+    titleSmall = TextStyle(
+        fontFamily = nanumbarungothic,
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp,
+        lineHeight = 28.sp,
+        letterSpacing = 0.sp
+    ), // Bold 18.sp (small)
     labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
+        fontFamily = nanumbarungothic,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 28.sp,
         letterSpacing = 0.5.sp
-    )
-    */
+    ) // Normal 16.sp (small)
 )
