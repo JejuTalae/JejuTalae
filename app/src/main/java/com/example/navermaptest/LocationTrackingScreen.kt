@@ -23,9 +23,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,24 +36,39 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.navermaptest.ui.theme.Typography
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraPosition
+import com.naver.maps.map.compose.CameraPositionState
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.LocationTrackingMode
 import com.naver.maps.map.compose.MapProperties
 import com.naver.maps.map.compose.MapUiSettings
+import com.naver.maps.map.compose.Marker
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.compose.rememberFusedLocationSource
+import com.naver.maps.map.compose.rememberMarkerState
+import com.naver.maps.map.overlay.OverlayImage
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun LocationTrackingScreen(navController: NavHostController) {
-    BottomSheetScaffold(modifier = Modifier
-        .fillMaxSize()
-        , topBar = {
-        TopSearchBar(modifier = Modifier.statusBarsPadding())
-    }, sheetContent = {
-        BottomSheetContent(modifier = Modifier.navigationBarsPadding(), navController = navController)
-    },
+
+    val bottomSheetState = rememberBottomSheetScaffoldState()
+
+    val coroutineScope = rememberCoroutineScope()
+
+    BottomSheetScaffold(scaffoldState = bottomSheetState,
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            TopSearchBar(modifier = Modifier.statusBarsPadding())
+        },
+        sheetContent = {
+            BottomSheetContent(
+                modifier = Modifier.navigationBarsPadding(), navController = navController
+            )
+        },
         sheetPeekHeight = 100.dp
     ) { contentPadding ->
         Column(modifier = Modifier.padding(contentPadding)) {
@@ -84,10 +101,10 @@ fun LocationTrackingScreen(navController: NavHostController) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
-                            selected = selectedOption == index, onClick = null,
+                            selected = selectedOption == index,
+                            onClick = null,
                             colors = RadioButtonDefaults.colors(
-                                selectedColor = Color.Black,
-                                unselectedColor = Color.Black
+                                selectedColor = Color.Black, unselectedColor = Color.Black
                             )
                         )
                         Text(
@@ -109,7 +126,11 @@ fun LocationTrackingScreen(navController: NavHostController) {
 
                 else -> false
             }
-            val cameraPositionState = rememberCameraPositionState()
+            val jeju = LatLng(33.4996, 126.5312)
+            val cameraPositionState: CameraPositionState = rememberCameraPositionState {
+                // 카메라 초기 위치를 설정합니다.
+                position = CameraPosition(jeju, 14.0)
+            }
             NaverMap(
                 cameraPositionState = cameraPositionState,
                 locationSource = rememberFusedLocationSource(
@@ -127,28 +148,62 @@ fun LocationTrackingScreen(navController: NavHostController) {
                         onOptionSelected(it.ordinal)
                     }
                 },
-            )
+            ) {
+                Marker(
+                    state = rememberMarkerState(
+                        position = LatLng(33.4996, 126.5312)
+                    ),
+                    icon = OverlayImage.fromResource(R.drawable.marker),
+                    width = 45.dp,
+                    height = 45.dp,
+                    onClick = {
+                        coroutineScope.launch {
+                            bottomSheetState.bottomSheetState.expand()
+                        }
+                        true
+                    }// bottomsheet 가 올라오도록
+                )
+                Marker(state = rememberMarkerState(
+                    position = LatLng(33.5104, 126.4914)
+                ),
+                    icon = OverlayImage.fromResource(R.drawable.marker),
+                    width = 45.dp,
+                    height = 45.dp,
+                    onClick = {
+                        coroutineScope.launch {
+                            bottomSheetState.bottomSheetState.expand()
+                        }
+                        true
+                    })
+            }
         }
     }
 }
 
 @Composable
-fun BottomSheetContent(modifier : Modifier = Modifier, navController: NavHostController) {
-    Column(modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally) {
+fun BottomSheetContent(modifier: Modifier = Modifier, navController: NavHostController) {
+    Column(
+        modifier = modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text("선택된 정류소 이름", style = Typography.titleLarge)
         Spacer(modifier = Modifier.height(10.dp))
         Text("방향 명시 ex) [북] 방면", style = Typography.labelSmall)
         Spacer(modifier = Modifier.height(15.dp))
         Row() {
-            Button(onClick = { navController.navigate("busStop") }, border = BorderStroke(2.dp, Color(0xff41C3E7))) {
+            Button(
+                onClick = { navController.navigate("busStop") },
+                border = BorderStroke(2.dp, Color(0xff41C3E7))
+            ) {
                 Text("  출발  ", style = Typography.labelSmall.copy(color = Color(0xff41C3E7)))
             }
             Spacer(modifier = Modifier.width(20.dp))
-            Button(onClick = { /*TODO*/ }, border = BorderStroke(2.dp, Color(0xff41C3E7)),
-                 colors = ButtonDefaults.buttonColors(
-                     containerColor = Color(0xff41C3E7)
-                )){
+            Button(
+                onClick = { /*TODO*/ },
+                border = BorderStroke(2.dp, Color(0xff41C3E7)),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xff41C3E7)
+                )
+            ) {
                 Text("  도착  ", style = Typography.labelSmall.copy(color = Color.White))
             }
         }

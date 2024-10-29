@@ -59,11 +59,11 @@ fun BusStopScreen(viewModel: BusStopViewModel = viewModel(), navController: NavC
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
-            IconButton(onClick = { /* Handle back action */ }) {
+            IconButton(onClick = { navController.popBackStack() }) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = "Back", modifier = Modifier.size(30.dp))
             }
             Text(text = "520", fontSize = 25.sp)
-            IconButton(onClick = { /* Handle close action */ }) {
+            IconButton(onClick = { navController.popBackStack() }) {
                 Icon(Icons.Default.Close, contentDescription = "Close", modifier = Modifier.size(30.dp))
             }
         }
