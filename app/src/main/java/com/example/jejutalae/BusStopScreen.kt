@@ -1,4 +1,4 @@
-package com.example.navermaptest
+package com.example.jejutalae
 
 import BusStopItemPreview
 import androidx.compose.foundation.BorderStroke

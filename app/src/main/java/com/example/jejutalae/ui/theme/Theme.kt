@@ -1,4 +1,4 @@
-package com.example.navermaptest.ui.theme
+package com.example.jejutalae.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

@@ -1,4 +1,4 @@
-package com.example.navermaptest
+package com.example.jejutalae
 
 import retrofit2.http.GET
 import retrofit2.http.Query

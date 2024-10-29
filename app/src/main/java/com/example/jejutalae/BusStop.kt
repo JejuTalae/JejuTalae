@@ -1,4 +1,4 @@
-package com.example.navermaptest
+package com.example.jejutalae
 
 data class BusStop(
     val id: String,

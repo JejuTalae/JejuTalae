@@ -1,4 +1,4 @@
-package com.example.navermaptest
+package com.example.jejutalae
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

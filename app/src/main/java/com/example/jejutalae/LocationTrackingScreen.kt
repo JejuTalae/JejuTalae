@@ -1,4 +1,4 @@
-package com.example.navermaptest
+package com.example.jejutalae
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -35,7 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.navermaptest.ui.theme.Typography
+import com.example.jejutalae.ui.theme.Typography
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.compose.CameraPositionState

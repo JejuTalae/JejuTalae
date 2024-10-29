@@ -1,10 +1,10 @@
-package com.example.navermaptest.ui.theme
+package com.example.jejutalae.ui.theme
 
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import com.example.navermaptest.R
+import com.example.jejutalae.R
 
 val nanumbarungothic = FontFamily(
     Font(R.font.nanumbarungothic, FontWeight.Normal, FontStyle.Normal),

@@ -1,4 +1,4 @@
-package com.example.navermaptest
+package com.example.jejutalae
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

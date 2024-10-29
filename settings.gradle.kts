@@ -20,6 +20,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "NaverMapTest"
+rootProject.name = "JejuTalae"
 include(":app")
  

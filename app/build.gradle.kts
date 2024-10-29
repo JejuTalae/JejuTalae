@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.navermaptest"
+    namespace = "com.example.jejutalae"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.navermaptest"
+        applicationId = "com.example.jejutalae"
         minSdk = 29
         targetSdk = 34
         versionCode = 1

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NaverMapTest</string>
+    <string name="app_name">JejuTalae</string>
     <string name="location_tracking_mode_face">Face</string>
     <string name="location_tracking_mode_follow">Follow</string>
     <string name="location_tracking_mode_no_follow">NoFollow</string>

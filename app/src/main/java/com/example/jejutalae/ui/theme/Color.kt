@@ -1,4 +1,4 @@
-package com.example.navermaptest.ui.theme
+package com.example.jejutalae.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
