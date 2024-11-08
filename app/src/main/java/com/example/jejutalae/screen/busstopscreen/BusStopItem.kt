@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.example.jejutalae.BusStop
+import com.example.jejutalae.data.BusStop
 
 
 @Preview(showBackground = false, widthDp = 380, heightDp = 700)

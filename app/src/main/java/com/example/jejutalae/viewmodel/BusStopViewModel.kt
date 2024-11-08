@@ -1,12 +1,13 @@
-package com.example.jejutalae
+package com.example.jejutalae.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.jejutalae.data.BusStop
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.example.jejutalae.api.RetrofitInstance
+
 
 class BusStopViewModel : ViewModel() {
     private val _busStops = MutableLiveData<List<BusStop>>()
@@ -15,11 +16,7 @@ class BusStopViewModel : ViewModel() {
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> = _errorMessage
 
-    private val api: BusStopApi = Retrofit.Builder()
-        .baseUrl("https://api.example.com/") // 변경할 것
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-        .create(BusStopApi::class.java)
+
 
     fun loadBusStops(busNumber: String) {
         viewModelScope.launch {
@@ -45,7 +42,7 @@ class BusStopViewModel : ViewModel() {
                         BusStop("17", "제주대학교(영주고,국제대)", "제주시 아라일동")
                     )
                 } else {
-                    api.getBusStops(busNumber)
+                    RetrofitInstance.api.getBusStops(busNumber)
                 }
                 _busStops.value = stops
                 _errorMessage.value = "" // 성공 시 에러 메시지 초기화

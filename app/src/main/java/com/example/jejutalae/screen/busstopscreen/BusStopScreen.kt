@@ -1,4 +1,4 @@
-package com.example.jejutalae
+package com.example.jejutalae.screen.busstopscreen
 
 import BusStopItemPreview
 import androidx.compose.foundation.BorderStroke
@@ -39,6 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.jejutalae.R
+import com.example.jejutalae.viewmodel.BusStopViewModel
 
 @Composable
 fun BusStopScreen(viewModel: BusStopViewModel = viewModel(), navController: NavController) {

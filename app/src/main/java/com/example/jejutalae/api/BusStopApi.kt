@@ -1,5 +1,6 @@
-package com.example.jejutalae
+package com.example.jejutalae.api
 
+import com.example.jejutalae.data.BusStop
 import retrofit2.http.GET
 import retrofit2.http.Query
 

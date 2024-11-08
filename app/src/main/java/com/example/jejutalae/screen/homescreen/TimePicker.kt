@@ -1,4 +1,4 @@
-package com.example.jejutalae
+package com.example.jejutalae.screen.homescreen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

@@ -1,4 +1,4 @@
-package com.example.jejutalae
+package com.example.jejutalae.data
 
 data class BusStop(
     val id: String,

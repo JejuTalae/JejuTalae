@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.example.jejutalae.navigate.NavGraph
 import com.example.jejutalae.ui.theme.NaverMapTestTheme
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 
@@ -14,7 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NaverMapTestTheme {
-                    MainScreen()
+                    NavGraph()
                 }
             }
         }

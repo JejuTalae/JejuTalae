@@ -1,4 +1,4 @@
-package com.example.jejutalae
+package com.example.jejutalae.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.jejutalae.R
 import kotlinx.coroutines.delay
 
 @Composable
