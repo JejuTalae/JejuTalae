@@ -1,7 +1,9 @@
 package com.example.jejutalae.screen.busschedule
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -81,7 +83,7 @@ fun BusScheduleCard() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 중단 시간 정보
+        // 버스 경로 표시 - 상단 부분
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -200,6 +202,125 @@ fun BusScheduleCard() {
                         text = "50분",
                         color = Color.White
                     )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // 버스 상세 정보
+        Row(
+            modifier = Modifier.padding(start = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // 버스 번호와 시간 정보
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // 버스 번호
+                Box(
+                    modifier = Modifier
+                        .size(55.dp)
+                        .border(
+                            width = 5.dp,
+                            color = BusBlue,
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "301",
+                        color = BusBlue,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 16.sp
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // 시간
+                Text(
+                    text = "50분",
+                    color = BusBlue,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 18.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            // 타임라인과 정류장 정보
+            Box(modifier = Modifier.height(IntrinsicSize.Min)) {
+                Row {
+                    // 타임라인
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp)
+                            .fillMaxHeight()
+                    ) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        // 상단 점
+                        Box(
+                            modifier = Modifier
+                                .size(8.dp)
+                                .background(BusBlue, CircleShape)
+                        )
+                        // 연결선
+                        Box(
+                            modifier = Modifier
+                                .width(2.dp)
+                                .weight(1f)
+                                .background(BusBlue)
+                        )
+                        // 하단 점
+                        Box(
+                            modifier = Modifier
+                                .size(8.dp)
+                                .background(BusBlue, CircleShape)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    // 정류장 정보
+                    Column(
+                        modifier = Modifier.padding(start = 8.dp),
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "제주 버스 터미널",
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Column(
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        ) {
+                            Text(
+                                text = "오전 07:10",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Row {
+                                Text(
+                                    text = "오전 7:00로 부터 ",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = Gray600
+                                )
+                                Text(
+                                    text = "10분 후 도착",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = Color.Red
+                                )
+                            }
+                        }
+
+                        Text(
+                            text = "제주 시청",
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         }
