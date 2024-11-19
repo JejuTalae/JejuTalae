@@ -220,7 +220,7 @@ fun BottomSheetContent(modifier: Modifier = Modifier, navController: NavHostCont
             }
             Spacer(modifier = Modifier.width(20.dp))
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate("busSchedule") },
                 border = BorderStroke(2.dp, Color(0xff41C3E7)),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xff41C3E7)
