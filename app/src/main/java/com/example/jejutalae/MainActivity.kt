@@ -5,16 +5,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.jejutalae.navigate.NavGraph
-import com.example.jejutalae.ui.theme.NaverMapTestTheme
-import com.naver.maps.map.compose.ExperimentalNaverMapApi
+import com.example.jejutalae.ui.theme.JejuTalaeTheme
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalNaverMapApi::class)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            NaverMapTestTheme {
+            JejuTalaeTheme {
                     NavGraph()
                 }
             }
