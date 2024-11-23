@@ -43,7 +43,7 @@ import com.example.jejutalae.R
 import com.example.jejutalae.viewmodel.BusStopViewModel
 
 @Composable
-fun BusStopScreen(viewModel: BusStopViewModel = viewModel(), navController: NavController) {
+fun BusStopScreen(modifier: Modifier = Modifier, viewModel: BusStopViewModel = viewModel(), navController: NavController) {
     var busNumber by remember { mutableStateOf("") }
     val busStops by viewModel.busStops.observeAsState(initial = emptyList())
     val errorMessage by viewModel.errorMessage.observeAsState(initial = "")

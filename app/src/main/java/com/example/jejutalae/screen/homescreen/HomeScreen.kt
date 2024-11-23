@@ -75,14 +75,14 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) {
 
     val bottomSheetState = rememberBottomSheetScaffoldState()
 
     val coroutineScope = rememberCoroutineScope()
 
     BottomSheetScaffold(scaffoldState = bottomSheetState,
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         topBar = {
             TopSearchBar(modifier = Modifier.statusBarsPadding())
         },
@@ -311,6 +311,7 @@ fun TopSearchBar(modifier: Modifier = Modifier) {
     }
 }
 
+//복사한 코드(이해할 필요X)
 fun Modifier.dropShadow(
     shape: Shape,
     color: Color = Color.Black.copy(0.25f),

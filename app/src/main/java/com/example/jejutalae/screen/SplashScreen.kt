@@ -22,7 +22,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun SplashScreen(modifier: Modifier = Modifier, navController: NavController) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(Color.White),
         contentAlignment = Alignment.Center
@@ -44,9 +44,9 @@ fun SplashScreen(modifier: Modifier = Modifier, navController: NavController) {
         }
     }
 
-    // 3초 후 LocationTrackingScreen으로 이동
+    // 2초 후 LocationTrackingScreen 으로 이동
     LaunchedEffect(Unit) {
-        delay(3000L) // 3초 대기
+        delay(2000L) // 2초 대기
         navController.navigate("locationTracking") {
             popUpTo("splash") { inclusive = true } // 스플래시 화면을 네비게이션 스택에서 제거
         }

@@ -47,8 +47,10 @@ fun BusStopItemPreview() {
         BusStop("16", "제주대학교병원", "제주시 아라일동"),
         BusStop("17", "제주대학교(영주고,국제대)", "제주시 아라일동")
     )
-    Column(modifier = Modifier.padding(start = 30.dp).verticalScroll(rememberScrollState())) {
-        busList.forEachIndexed{index, busStop ->
+    Column(modifier = Modifier
+        .padding(start = 30.dp)
+        .verticalScroll(rememberScrollState())) {
+        busList.forEachIndexed{ index, busStop ->
             BusStopItem(busStop = busStop, isFirst = (index == 0), isLast = (index == busList.size - 1))
         }
     }

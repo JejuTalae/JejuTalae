@@ -43,14 +43,26 @@ fun DialExample(
         initialMinute = currentTime.get(Calendar.MINUTE),
         is24Hour = true,
     )
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFFFFFFFF))){}
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Color(0xFFFFFFFF))) {}
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
         Column(
-            modifier = Modifier.fillMaxWidth(0.8f).fillMaxHeight(0.65f)
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .fillMaxHeight(0.65f)
                 .background(Color(0xFFF5F5F5)), horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("시간을 선택해주세요", style = Typography.titleMedium.copy(color = Color.Black), modifier = Modifier.offset(x = 16.dp))
+            Text(
+                "시간을 선택해주세요",
+                style = Typography.titleMedium.copy(color = Color.Black),
+                modifier = Modifier.offset(x = 16.dp)
+            )
             Spacer(modifier = Modifier.height(15.dp))
             TimePicker(
                 state = timePickerState,
