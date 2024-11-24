@@ -19,9 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.jejutalae.R
-import com.example.jejutalae.ui.theme.BusBlue
-import com.example.jejutalae.ui.theme.Gray200
-import com.example.jejutalae.ui.theme.Gray600
+import com.example.jejutalae.ui.theme.LightBlue
+import com.example.jejutalae.ui.theme.VeryLightGray
+import com.example.jejutalae.ui.theme.MediumGray
 
 @Composable
 fun BusScheduleScreen(navController: NavController) {
@@ -77,7 +77,7 @@ fun BusScheduleCard() {
             Text(
                 text = "오전 7:00 ~ 오전 9:00",
                 style = MaterialTheme.typography.bodyLarge,
-                color = Gray600
+                color = MediumGray
             )
         }
 
@@ -101,7 +101,7 @@ fun BusScheduleCard() {
                     Icon(
                         painter = painterResource(id = R.drawable.location),
                         contentDescription = "도보",
-                        tint = Gray600,
+                        tint = MediumGray,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -117,13 +117,13 @@ fun BusScheduleCard() {
                         Icon(
                             painter = painterResource(id = R.drawable.location),
                             contentDescription = "버스",
-                            tint = BusBlue,
+                            tint = LightBlue,
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = "301",
-                            color = BusBlue,
+                            color = LightBlue,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -136,7 +136,7 @@ fun BusScheduleCard() {
                     Icon(
                         painter = painterResource(id = R.drawable.location),
                         contentDescription = "도보",
-                        tint = Gray600,
+                        tint = MediumGray,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -153,7 +153,7 @@ fun BusScheduleCard() {
                     modifier = Modifier
                         .fillMaxSize()
                         .background(
-                            color = Gray200,
+                            color = VeryLightGray,
                             shape = RoundedCornerShape(16.dp)
                         )
                 ) {
@@ -169,7 +169,7 @@ fun BusScheduleCard() {
                             Text(
                                 text = "5분",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = Gray600
+                                color = MediumGray
                             )
                         }
                         Spacer(modifier = Modifier.weight(0.6f))
@@ -180,7 +180,7 @@ fun BusScheduleCard() {
                             Text(
                                 text = "5분",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = Gray600
+                                color = MediumGray
                             )
                         }
                     }
@@ -193,7 +193,7 @@ fun BusScheduleCard() {
                         .height(30.dp)
                         .align(Alignment.Center)
                         .background(
-                            color = BusBlue,
+                            color = LightBlue,
                             shape = RoundedCornerShape(16.dp)
                         ),
                     contentAlignment = Alignment.Center
@@ -223,14 +223,14 @@ fun BusScheduleCard() {
                         .size(55.dp)
                         .border(
                             width = 5.dp,
-                            color = BusBlue,
+                            color = LightBlue,
                             shape = CircleShape
                         ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "301",
-                        color = BusBlue,
+                        color = LightBlue,
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
                     )
@@ -241,7 +241,7 @@ fun BusScheduleCard() {
                 // 시간
                 Text(
                     text = "50분",
-                    color = BusBlue,
+                    color = LightBlue,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 18.sp
@@ -265,20 +265,20 @@ fun BusScheduleCard() {
                         Box(
                             modifier = Modifier
                                 .size(8.dp)
-                                .background(BusBlue, CircleShape)
+                                .background(LightBlue, CircleShape)
                         )
                         // 연결선
                         Box(
                             modifier = Modifier
                                 .width(2.dp)
                                 .weight(1f)
-                                .background(BusBlue)
+                                .background(LightBlue)
                         )
                         // 하단 점
                         Box(
                             modifier = Modifier
                                 .size(8.dp)
-                                .background(BusBlue, CircleShape)
+                                .background(LightBlue, CircleShape)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
@@ -305,7 +305,7 @@ fun BusScheduleCard() {
                                 Text(
                                     text = "오전 7:00로 부터 ",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = Gray600
+                                    color = MediumGray
                                 )
                                 Text(
                                     text = "10분 후 도착",
