@@ -55,6 +55,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.jejutalae.R
+import com.example.jejutalae.data.BusStation
+import com.example.jejutalae.data.markerDataList
+import com.example.jejutalae.ui.theme.AlmostWhite
 import com.example.jejutalae.ui.theme.LightBlue
 import com.example.jejutalae.ui.theme.SoftBlue
 import com.example.jejutalae.ui.theme.Typography
@@ -95,6 +98,8 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
     // ViewModel의 선택된 시간 상태를 관찰
     val selectedTime by viewModel.selectedTime.collectAsState()
 
+    val selectedBusStation = remember { mutableStateOf<BusStation?>(null) }
+
     BottomSheetScaffold(scaffoldState = bottomSheetState,
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -107,7 +112,8 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
         },
         sheetContent = {
             BottomSheetContent(
-                navController = navController
+                navController = navController,
+                busStation = selectedBusStation.value
             )
         },
         sheetPeekHeight = 170.dp
@@ -179,32 +185,21 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
                     }
                 },
             ) {
-                Marker(
-                    state = rememberMarkerState(
-                        position = LatLng(33.4996, 126.5312)
-                    ),
-                    icon = OverlayImage.fromResource(R.drawable.marker),
-                    width = 45.dp,
-                    height = 45.dp,
-                    onClick = {
-                        coroutineScope.launch {
-                            bottomSheetState.bottomSheetState.expand()
+                for (markerData in markerDataList) {
+                    Marker(
+                        state = rememberMarkerState(position = markerData.position),
+                        icon = OverlayImage.fromResource(R.drawable.marker),
+                        width = 45.dp,
+                        height = 45.dp,
+                        onClick = {
+                            selectedBusStation.value = markerData.busStation
+                            coroutineScope.launch {
+                                bottomSheetState.bottomSheetState.expand()
+                            }
+                            true
                         }
-                        true
-                    }// bottomsheet 가 올라오도록
-                )
-                Marker(state = rememberMarkerState(
-                    position = LatLng(33.5104, 126.4914)
-                ),
-                    icon = OverlayImage.fromResource(R.drawable.marker),
-                    width = 45.dp,
-                    height = 45.dp,
-                    onClick = {
-                        coroutineScope.launch {
-                            bottomSheetState.bottomSheetState.expand()
-                        }
-                        true
-                    })
+                    )
+                }
             }
             if (isDialogVisible) {
                     DialExample(
@@ -223,13 +218,13 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
 }
 
 @Composable
-fun BottomSheetContent(modifier: Modifier = Modifier, navController: NavHostController) {
+fun BottomSheetContent(modifier: Modifier = Modifier, navController: NavHostController, busStation: BusStation?) {
     Column(
-        modifier = modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier.fillMaxWidth().background(Color.White), horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("선택된 정류소 이름", style = Typography.titleLarge)
+        Text(busStation?.name ?: "정류소 선택하기", style = Typography.titleLarge)
         Spacer(modifier = Modifier.height(10.dp))
-        Text("방향 명시 ex) [북] 방면", style = Typography.labelSmall)
+        Text(busStation?.direction ?: "마커를 클릭해주세요", style = Typography.labelSmall)
         Spacer(modifier = Modifier.height(15.dp))
         Row() {
             Button(
@@ -250,6 +245,15 @@ fun BottomSheetContent(modifier: Modifier = Modifier, navController: NavHostCont
                 )
             ) {
                 Text("  도착  ", style = Typography.labelSmall.copy(color = Color.White))
+            }
+        }
+        Spacer(modifier = Modifier.height(5.dp))
+    }
+    Column(modifier = Modifier.fillMaxWidth().background(Color.White)) {
+        busStation?.busList?.forEach { bus ->
+            BusStationCard(bus = bus)
+            Box(modifier = Modifier.fillMaxWidth().background(AlmostWhite)) {
+                Spacer(modifier = Modifier.height(10.dp))
             }
         }
     }
