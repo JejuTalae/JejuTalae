@@ -4,21 +4,17 @@ import android.graphics.BlurMaskFilter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
@@ -26,13 +22,15 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.SheetValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,7 +55,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.jejutalae.R
+import com.example.jejutalae.ui.theme.LightBlue
+import com.example.jejutalae.ui.theme.SoftBlue
 import com.example.jejutalae.ui.theme.Typography
+import com.example.jejutalae.viewmodel.HomeViewModel
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.compose.CameraPositionState
@@ -72,71 +73,78 @@ import com.naver.maps.map.compose.rememberFusedLocationSource
 import com.naver.maps.map.compose.rememberMarkerState
 import com.naver.maps.map.overlay.OverlayImage
 import kotlinx.coroutines.launch
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) {
-
-    val bottomSheetState = rememberBottomSheetScaffoldState()
+    val viewModel: HomeViewModel = viewModel()
+    val bottomSheetState = rememberBottomSheetScaffoldState(
+        SheetState(
+            skipHiddenState = true,
+            skipPartiallyExpanded = false,
+            initialValue = SheetValue.PartiallyExpanded
+        )
+    )
 
     val coroutineScope = rememberCoroutineScope()
+
+    // 다이얼로그 표시 여부
+    var isDialogVisible by remember { mutableStateOf(false) }
+
+    // ViewModel의 선택된 시간 상태를 관찰
+    val selectedTime by viewModel.selectedTime.collectAsState()
 
     BottomSheetScaffold(scaffoldState = bottomSheetState,
         modifier = modifier.fillMaxSize(),
         topBar = {
-            TopSearchBar(modifier = Modifier.statusBarsPadding())
+            TopSearchBar(modifier = Modifier.statusBarsPadding(),
+                text1 = viewModel.text1,
+                onText1Change = { viewModel.text1 = it },
+                text2 = viewModel.text2,
+                onText2Change = { viewModel.text2 = it }
+            )
         },
         sheetContent = {
             BottomSheetContent(
-                modifier = Modifier.navigationBarsPadding(), navController = navController
+                navController = navController
             )
         },
-        sheetPeekHeight = 100.dp
+        sheetPeekHeight = 170.dp
     ) { contentPadding ->
         Column(modifier = Modifier.padding(contentPadding)) {
-            val options = listOf(
-                stringResource(R.string.location_tracking_mode_none),
-                stringResource(R.string.location_tracking_mode_no_follow),
-                stringResource(R.string.location_tracking_mode_follow),
-                stringResource(R.string.location_tracking_mode_face),
-            )
             val (selectedOption, onOptionSelected) = remember { mutableStateOf(2) }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .selectableGroup()
-                    .background(Color(0xFFF2FCFF)),
-                verticalAlignment = Alignment.CenterVertically,
+                    .clickable(onClick = {isDialogVisible = true})
+                    .background(color = SoftBlue),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                options.forEachIndexed { index, text ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(42.dp)
-                            .selectable(
-                                selected = selectedOption == index,
-                                onClick = { onOptionSelected(index) },
-                                role = Role.RadioButton
-                            )
-                            .padding(horizontal = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = selectedOption == index,
-                            onClick = null,
-                            colors = RadioButtonDefaults.colors(
-                                selectedColor = Color.Black, unselectedColor = Color.Black
-                            )
-                        )
-                        Text(
-                            text = text, modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                }
+                Text(
+                    text = selectedTime?.let {
+                        // 선택된 시간이 있으면 표시
+                        "${it.format(DateTimeFormatter.ofPattern("a h시 mm분"))} "
+                    } ?: "시간을 선택해주세요",
+                    style = Typography.labelSmall.copy(color = LightBlue),
+                    modifier = Modifier.padding(top = 12.dp, bottom = 12.dp, start = 5.dp))
+                Text(
+                    text = selectedTime?.let {
+                        // 선택된 시간이 있으면 표시
+                        "출발 "
+                    } ?: "",
+                    style = Typography.labelSmall.copy(color = Color.Black),
+                    modifier = Modifier.padding(top =12.dp, bottom = 12.dp)
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.triangle),
+                    contentDescription = "triangle",
+                    modifier = Modifier.size(21.dp),
+                    tint = Color.Unspecified
+                )
             }
 
-            val locationTrackingMode = when (selectedOption) {
+            val locationTrackingMode: LocationTrackingMode = when (selectedOption) {
                 0 -> LocationTrackingMode.None
                 1 -> LocationTrackingMode.NoFollow
                 2 -> LocationTrackingMode.Follow
@@ -165,7 +173,7 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
                     isLocationButtonEnabled = true,
                     isCompassEnabled = isCompassEnabled,
                 ),
-                onOptionChange = {
+                 onOptionChange = {
                     cameraPositionState.locationTrackingMode?.let {
                         onOptionSelected(it.ordinal)
                     }
@@ -198,6 +206,18 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
                         true
                     })
             }
+            if (isDialogVisible) {
+                    DialExample(
+                        onConfirm = { time ->
+                            // 선택된 시간을 ViewModel에 저장
+                            viewModel.updateSelectedTime(time)
+                            isDialogVisible = false
+                        },
+                        onDismiss = {
+                            isDialogVisible = false
+                        }
+                    )
+                }
         }
     }
 }
@@ -214,16 +234,19 @@ fun BottomSheetContent(modifier: Modifier = Modifier, navController: NavHostCont
         Row() {
             Button(
                 onClick = { navController.navigate("busStop") },
-                border = BorderStroke(2.dp, Color(0xff41C3E7))
+                border = BorderStroke(2.dp, LightBlue),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White
+                )
             ) {
-                Text("  출발  ", style = Typography.labelSmall.copy(color = Color(0xff41C3E7)))
+                Text("  출발  ", style = Typography.labelSmall.copy(color = LightBlue))
             }
             Spacer(modifier = Modifier.width(20.dp))
             Button(
                 onClick = { navController.navigate("busSchedule") },
-                border = BorderStroke(2.dp, Color(0xff41C3E7)),
+                border = BorderStroke(2.dp, LightBlue),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xff41C3E7)
+                    containerColor = LightBlue
                 )
             ) {
                 Text("  도착  ", style = Typography.labelSmall.copy(color = Color.White))
@@ -233,9 +256,11 @@ fun BottomSheetContent(modifier: Modifier = Modifier, navController: NavHostCont
 }
 
 @Composable
-fun TopSearchBar(modifier: Modifier = Modifier) {
-    var text1 by remember { mutableStateOf("제주국제공항") }
-    var text2 by remember { mutableStateOf("오설록 티 뮤지엄") }
+fun TopSearchBar(modifier: Modifier = Modifier,
+                 text1: String,
+                 onText1Change: (String) -> Unit,
+                 text2: String,
+                 onText2Change: (String) -> Unit) {
 
     Row(
         modifier = modifier
@@ -253,8 +278,8 @@ fun TopSearchBar(modifier: Modifier = Modifier) {
     ) {
         IconButton(onClick = {
             val temp = text1
-            text1 = text2
-            text2 = temp
+            onText1Change(text2)
+            onText2Change(temp)
         }) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.group_4_2x),
@@ -264,7 +289,7 @@ fun TopSearchBar(modifier: Modifier = Modifier) {
         Column {
             Spacer(modifier = Modifier.height(10.dp))
             TextField(value = text1,
-                onValueChange = { text1 = it },
+                onValueChange = onText1Change,
                 shape = RoundedCornerShape(10.dp), // 네 모서리 둥글게 설정
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color(0xFFF8F8F8),
@@ -282,12 +307,12 @@ fun TopSearchBar(modifier: Modifier = Modifier) {
                         modifier = Modifier
                             .size(22.dp)
                             .clickable {
-                                text1 = ""
+                                onText1Change("")
                             })
                 })
             Spacer(modifier = Modifier.height(10.dp))
             TextField(value = text2,
-                onValueChange = { text2 = it },
+                onValueChange = onText2Change,
                 shape = RoundedCornerShape(10.dp), // 네 모서리 둥글게 설정
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color(0xFFF8F8F8),
