@@ -59,6 +59,7 @@ import com.example.jejutalae.data.BusStation
 import com.example.jejutalae.data.markerDataList
 import com.example.jejutalae.ui.theme.AlmostWhite
 import com.example.jejutalae.ui.theme.LightBlue
+import com.example.jejutalae.ui.theme.MediumGray
 import com.example.jejutalae.ui.theme.SoftBlue
 import com.example.jejutalae.ui.theme.Typography
 import com.example.jejutalae.viewmodel.HomeViewModel
@@ -76,6 +77,7 @@ import com.naver.maps.map.compose.rememberFusedLocationSource
 import com.naver.maps.map.compose.rememberMarkerState
 import com.naver.maps.map.overlay.OverlayImage
 import kotlinx.coroutines.launch
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterial3Api::class)
@@ -113,7 +115,8 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
         sheetContent = {
             BottomSheetContent(
                 navController = navController,
-                busStation = selectedBusStation.value
+                busStation = selectedBusStation.value,
+                selectedTime = selectedTime
             )
         },
         sheetPeekHeight = 170.dp
@@ -218,9 +221,14 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
 }
 
 @Composable
-fun BottomSheetContent(modifier: Modifier = Modifier, navController: NavHostController, busStation: BusStation?) {
+fun BottomSheetContent(modifier: Modifier = Modifier,
+                       navController: NavHostController,
+                       busStation: BusStation?,
+                       selectedTime: LocalTime?
+) {
     Column(
-        modifier = modifier.fillMaxWidth().background(Color.White), horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier.fillMaxWidth().background(Color.White),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(busStation?.name ?: "정류소 선택하기", style = Typography.titleLarge)
         Spacer(modifier = Modifier.height(10.dp))
@@ -251,10 +259,8 @@ fun BottomSheetContent(modifier: Modifier = Modifier, navController: NavHostCont
     }
     Column(modifier = Modifier.fillMaxWidth().background(Color.White)) {
         busStation?.busList?.forEach { bus ->
-            BusStationCard(bus = bus)
-            Box(modifier = Modifier.fillMaxWidth().background(AlmostWhite)) {
-                Spacer(modifier = Modifier.height(10.dp))
-            }
+            BusStationCard(bus = bus, selectedTime = selectedTime)
+            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }
