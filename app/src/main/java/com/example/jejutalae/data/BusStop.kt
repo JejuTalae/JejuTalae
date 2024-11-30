@@ -3,9 +3,63 @@ package com.example.jejutalae.data
 data class BusStop(
     val id: String,
     val name: String,
-    val location: String
+    val location: String,
 )
 
-val busStops_301:List<BusStop> = listOf()
-val busStops_424:List<BusStop> = listOf()
-val busStops_221:List<BusStop> = listOf()
+val busStops_301:List<BusStop> = listOf(
+    BusStop("1","번대동[동]", ""),
+    BusStop("1","하귀초등학교[남]", ""),
+    BusStop("3","하귀환승정류장(하귀하나로마트)[남]", ""),
+    BusStop("4","외도초등학교[남]", ""),
+    BusStop("5","이호2동[남]", ""),
+    BusStop("6","S중앙병원", ""),
+    BusStop("7","노형오거리(한라병원방면)[동]", ""),
+    BusStop("8","한라병원[동]", ""),
+    BusStop("9","제주도청 신제주로터리[동]", ""),
+    BusStop("10","제주버스터미널[남]", ""),
+    BusStop("11","동광양[남]", ""),
+    BusStop("12","천수동[동]", ""),
+    BusStop("13","오현중고등학교", ""),
+    BusStop("14","화북남문[남]", ""),
+    BusStop("15","삼양초등학교", ""),
+    BusStop("16","신촌초등학교[남]", ""),
+    BusStop("17","조천환승정류장(조천리사무소)[남]", ""),
+    BusStop("18","신흥리(마을입구), 함덕고등학교[남]", ""),
+    BusStop("19","함덕환승정류장(함덕해수욕장)", ""),
+    BusStop("20","신사동[서]", ""),
+    BusStop("21","신사동", ""),
+)
+val busStops_424:List<BusStop> = listOf(
+    BusStop("1","제주버스터미널[남]", ""),
+    BusStop("2","한국병원[남]", ""),
+    BusStop("3","남서광마을입구", ""),
+    BusStop("4","남서광마을", ""),
+    BusStop("5","탐라장애인 종합복지관[남]", ""),
+    BusStop("6","제주시청(아라방면)", ""),
+    BusStop("7","고산동산(아라방면)", ""),
+    BusStop("8","제주지방법원(아라방면)", ""),
+    BusStop("9","제주중앙여자고등학교", ""),
+    BusStop("10","제주여자중고등학교(아라방면)", ""),
+    BusStop("11","남국원(아라방면)", ""),
+    BusStop("12","아라초등학교[남]", ""),
+    BusStop("13","제주교통방송 아라아이파크[남]", ""),
+    BusStop("14","금천마을[남]", ""),
+    BusStop("14","제주버스터미널(북)", ""),
+)
+val busStops_221:List<BusStop> = listOf(
+    BusStop("1","제주버스터미널", ""),
+    BusStop("2","남서광마을입구", ""),
+    BusStop("3","탐라장애인 종합복지관[남]", ""),
+    BusStop("4","동광양[남]", ""),
+    BusStop("5","문예회관[동]", ""),
+    BusStop("6","인화초등학교[동]", ""),
+    BusStop("7","천수동[동]", ""),
+    BusStop("8","6호광장[남]", ""),
+    BusStop("9","거로 사거리", ""),
+    BusStop("10","거로 남쪽 입구[서]", ""),
+    BusStop("11","부록마을[남]", ""),
+    BusStop("12","봉개교[서]", ""),
+    BusStop("13","현앤수빌리지", ""),
+    BusStop("14","까라사벨로(동부영농지원센터)[남]", ""),
+    BusStop("14","제주민속촌(종점)", ""),
+    )

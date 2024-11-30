@@ -3,9 +3,11 @@ package com.example.jejutalae.data
 import java.time.LocalTime
 
 data class Bus(
+    val id: String, // 고유 식별자 추가
     val busNo: Int, // 버스 번호
     val schedule: List<LocalTime>, // 각 정류장별 도착 시간
-    val busStop: List<BusStop>
+    val busStop: List<BusStop>,
+    val startEndStation: String
 )
 
 val bus_301_JBT_schedule = listOf(
@@ -78,11 +80,11 @@ val bus_221_JBT_schedule = listOf(
 )
 val bus_221_DGY_schedule = bus_221_JBT_schedule.map { it.plusMinutes(6) }
 
-val bus_301_JBT = Bus(301, bus_301_JBT_schedule, busStops_301)
-val bus_424_JBT = Bus(424, bus_424_JBT_schedule, busStops_424)
-val bus_221_JBT = Bus(221, bus_221_JBT_schedule, busStops_221)
+val bus_301_JBT = Bus("bus_301_JBT",301, bus_301_JBT_schedule, busStops_301, "번대동<->신사동(종점)")
+val bus_424_JBT = Bus("bus_424_JBT", 424,bus_424_JBT_schedule, busStops_424, "제주버스터미널(남)<->제주버스터미널(북)")
+val bus_221_JBT = Bus("bus_221_JBT", 221,bus_221_JBT_schedule, busStops_221, "제주버스터미널<->제주민속촌")
 
-val bus_424_JCH = Bus(424, bus_424_JCH_schedule, busStops_424)
+val bus_424_JCH = Bus("bus_424_JCH",424,bus_424_JCH_schedule, busStops_424, "제주버스터미널(남)<->제주버스터미널(북)")
 
-val bus_301_DGY = Bus(301, bus_301_DGY_schedule, busStops_301)
-val bus_221_DGY = Bus(221, bus_221_DGY_schedule, busStops_221)
+val bus_301_DGY = Bus("bus_301_DGY",301, bus_301_DGY_schedule, busStops_301, "번대동<->신사동(종점)")
+val bus_221_DGY = Bus("bus_221_DGY",221, bus_221_DGY_schedule, busStops_221, "제주버스터미널<->제주민속촌")

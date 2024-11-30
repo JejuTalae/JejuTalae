@@ -1,6 +1,7 @@
 package com.example.jejutalae.screen.homescreen
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.jejutalae.data.Bus
 import com.example.jejutalae.ui.theme.LightBlue
 import com.example.jejutalae.ui.theme.MediumGray
@@ -32,14 +34,20 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun BusStationCard(modifier: Modifier = Modifier,
                    bus: Bus,
-                   selectedTime: LocalTime?
+                   selectedTime: LocalTime?,
+                   navController: NavController,
+                   busStationName: String
 ) {
     val nextArrivalTime = selectedTime?.let { time ->
         bus.schedule.firstOrNull { it.isAfter(time) }
     }
     Row(modifier = Modifier
         .fillMaxWidth()
-        .padding(start = 25.dp),
+        .padding(start = 25.dp)
+        .clickable {
+            // 버스 정보를 전달하면서 BusStopScreen으로 이동
+            navController.navigate("busStop/${bus.id}/$busStationName")
+        },
         ) {
         Box(
             modifier = Modifier
@@ -61,12 +69,12 @@ fun BusStationCard(modifier: Modifier = Modifier,
         Spacer(modifier = Modifier.width(20.dp))
         Column {
             Text(
-                text = "출발역 <-> 종착역",
+                text = bus.startEndStation,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.height(5.dp))
-            Row {
+            Spacer(modifier = Modifier.height(10.dp))
+            Row (verticalAlignment = Alignment.CenterVertically){
                     if (selectedTime == null) {
                         Text(
                             text = "시간을 선택해주세요",

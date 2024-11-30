@@ -227,7 +227,7 @@ fun BottomSheetContent(modifier: Modifier = Modifier,
                        selectedTime: LocalTime?
 ) {
     Column(
-        modifier = modifier.fillMaxWidth().background(Color.White),
+        modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(busStation?.name ?: "정류소 선택하기", style = Typography.titleLarge)
@@ -257,9 +257,10 @@ fun BottomSheetContent(modifier: Modifier = Modifier,
         }
         Spacer(modifier = Modifier.height(5.dp))
     }
-    Column(modifier = Modifier.fillMaxWidth().background(Color.White)) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         busStation?.busList?.forEach { bus ->
-            BusStationCard(bus = bus, selectedTime = selectedTime)
+            BusStationCard(bus = bus, selectedTime = selectedTime, navController = navController,
+                busStationName = busStation.name)
             Spacer(modifier = Modifier.height(10.dp))
         }
     }
@@ -336,7 +337,7 @@ fun TopSearchBar(modifier: Modifier = Modifier,
                 trailingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.location),
-                        contentDescription = "My Icon",
+                        contentDescription = "ReverseGeocoder",
                         modifier = Modifier.size(24.dp),
                         tint = Color.Unspecified
                     )
