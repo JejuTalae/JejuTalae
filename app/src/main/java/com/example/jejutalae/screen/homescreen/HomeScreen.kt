@@ -116,7 +116,8 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
             BottomSheetContent(
                 navController = navController,
                 busStation = selectedBusStation.value,
-                selectedTime = selectedTime
+                selectedTime = selectedTime,
+                viewModel = viewModel
             )
         },
         sheetPeekHeight = 170.dp
@@ -224,7 +225,8 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
 fun BottomSheetContent(modifier: Modifier = Modifier,
                        navController: NavHostController,
                        busStation: BusStation?,
-                       selectedTime: LocalTime?
+                       selectedTime: LocalTime?,
+                       viewModel: HomeViewModel
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -234,25 +236,27 @@ fun BottomSheetContent(modifier: Modifier = Modifier,
         Spacer(modifier = Modifier.height(10.dp))
         Text(busStation?.direction ?: "마커를 클릭해주세요", style = Typography.labelSmall)
         Spacer(modifier = Modifier.height(15.dp))
-        Row() {
-            Button(
-                onClick = { navController.navigate("busStop") },
-                border = BorderStroke(2.dp, LightBlue),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White
-                )
-            ) {
-                Text("  출발  ", style = Typography.labelSmall.copy(color = LightBlue))
-            }
-            Spacer(modifier = Modifier.width(20.dp))
-            Button(
-                onClick = { navController.navigate("busSchedule") },
-                border = BorderStroke(2.dp, LightBlue),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = LightBlue
-                )
-            ) {
-                Text("  도착  ", style = Typography.labelSmall.copy(color = Color.White))
+        if(busStation != null) {
+            Row() {
+                Button(
+                    onClick = { viewModel.text1 = busStation.name },
+                    border = BorderStroke(2.dp, LightBlue),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White
+                    )
+                ) {
+                    Text("  출발  ", style = Typography.labelSmall.copy(color = LightBlue))
+                }
+                Spacer(modifier = Modifier.width(20.dp))
+                Button(
+                    onClick = { viewModel.text2 = busStation.name },
+                    border = BorderStroke(2.dp, LightBlue),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = LightBlue
+                    )
+                ) {
+                    Text("  도착  ", style = Typography.labelSmall.copy(color = Color.White))
+                }
             }
         }
         Spacer(modifier = Modifier.height(5.dp))
