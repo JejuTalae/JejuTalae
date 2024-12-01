@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -26,12 +27,15 @@ import com.example.jejutalae.ui.theme.VeryLightGray
 import com.example.jejutalae.ui.theme.MediumGray
 
 @Composable
-fun BusScheduleScreen(navController: NavController) {
+fun BusScheduleScreen(
+    startStation: String,
+    endStation: String
+) {
     val busRoutes = listOf(
         BusRouteInfo(
             busNumber = "301",
-            startStation = "제주버스터미널",
-            endStation = "동광양[남]",
+            startStation = "제주시 버스터미널",
+            endStation = "동광양",
             totalTime = "14분",
             timeRange = "오후 1:03 ~ 오후 1:17",
             walkTimeStart = 2,
@@ -42,7 +46,7 @@ fun BusScheduleScreen(navController: NavController) {
         ),
         BusRouteInfo(
             busNumber = "424",
-            startStation = "제주버스터미널",
+            startStation = "제주시 버스터미널",
             endStation = "제주시청",
             totalTime = "11분",
             timeRange = "오후 1:09 ~ 오후 1:20",
@@ -54,8 +58,8 @@ fun BusScheduleScreen(navController: NavController) {
         ),
         BusRouteInfo(
             busNumber = "221",
-            startStation = "제주버스터미널",
-            endStation = "동광양[남]",
+            startStation = "제주시 버스터미널",
+            endStation = "동광양",
             totalTime = "14분",
             timeRange = "오후 12:44 ~ 오후 12:58",
             walkTimeStart = 2,
@@ -64,38 +68,31 @@ fun BusScheduleScreen(navController: NavController) {
             departureTime = "오후 12:44",
             arrivalAfterMinutes = "8분"
         )
-    )
+    ).filter { route ->
+        route.startStation == startStation && route.endStation == endStation
+    }
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFFFFFFF))
+            .fillMaxWidth()
     ) {
-        // Top Bar
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(70.dp)
-                .background(Color(0xFFFFFFFF)),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Bottom
-        ) {
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = "Back", modifier = Modifier.size(30.dp))
-            }
-            Text(text = "버스 경로", fontSize = 25.sp)
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(Icons.Default.Close, contentDescription = "Close", modifier = Modifier.size(30.dp))
-            }
-        }
-        
         Spacer(modifier = Modifier.height(10.dp))
-        Divider()
 
-        LazyColumn {
-            items(busRoutes) { routeInfo ->
-                BusScheduleCard(routeInfo = routeInfo)
-                Divider()
+        if (busRoutes.isEmpty()) {
+            // 경로가 없을 때 표시할 UI
+            Text(
+                text = "해당 경로의 버스가 없습니다",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                textAlign = TextAlign.Center
+            )
+        } else {
+            LazyColumn {
+                items(busRoutes) { routeInfo ->
+                    BusScheduleCard(routeInfo = routeInfo)
+                    Divider()
+                }
             }
         }
     }

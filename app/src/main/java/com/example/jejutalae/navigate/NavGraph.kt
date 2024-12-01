@@ -10,7 +10,6 @@ import androidx.navigation.navArgument
 import com.example.jejutalae.screen.busstopscreen.BusStopScreen
 import com.example.jejutalae.screen.homescreen.HomeScreen
 import com.example.jejutalae.screen.SplashScreen
-import com.example.jejutalae.screen.busschedule.BusScheduleScreen
 @Composable
 fun NavGraph() {
     val navController = rememberNavController()
@@ -34,9 +33,6 @@ fun NavGraph() {
             if (busId != null && busStationName != null) {
                 BusStopScreen(busId = busId, busStationName = busStationName, navController = navController)
             }
-        }
-        composable("busSchedule") {
-            BusScheduleScreen(navController = navController)
         }
     }
 }
