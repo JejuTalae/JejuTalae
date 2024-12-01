@@ -16,6 +16,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -30,6 +33,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,6 +61,7 @@ import androidx.navigation.NavHostController
 import com.example.jejutalae.R
 import com.example.jejutalae.data.BusStation
 import com.example.jejutalae.data.markerDataList
+import com.example.jejutalae.screen.busschedule.BusScheduleScreen
 import com.example.jejutalae.ui.theme.AlmostWhite
 import com.example.jejutalae.ui.theme.LightBlue
 import com.example.jejutalae.ui.theme.MediumGray
@@ -105,20 +110,31 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
     BottomSheetScaffold(scaffoldState = bottomSheetState,
         modifier = modifier.fillMaxSize(),
         topBar = {
-            TopSearchBar(modifier = Modifier.statusBarsPadding(),
+            TopSearchBar(
+                modifier = Modifier.statusBarsPadding(),
                 text1 = viewModel.text1,
                 onText1Change = { viewModel.text1 = it },
                 text2 = viewModel.text2,
-                onText2Change = { viewModel.text2 = it }
+                onText2Change = { viewModel.text2 = it },
+                onSearchCancel = { viewModel.toggleSearch(!viewModel.isSearching) },
+                isSearching = viewModel.isSearching
             )
         },
         sheetContent = {
-            BottomSheetContent(
-                navController = navController,
-                busStation = selectedBusStation.value,
-                selectedTime = selectedTime,
-                viewModel = viewModel
-            )
+            if (viewModel.isSearching) {
+                BusScheduleScreen(
+                    startStation = viewModel.text1,
+                    endStation = viewModel.text2,
+                    selectedTime = selectedTime
+                )
+            } else {
+                BottomSheetContent(
+                    navController = navController,
+                    busStation = selectedBusStation.value,
+                    selectedTime = selectedTime,
+                    viewModel = viewModel
+                )
+            }
         },
         sheetPeekHeight = 170.dp
     ) { contentPadding ->
@@ -197,6 +213,7 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
                         height = 45.dp,
                         onClick = {
                             selectedBusStation.value = markerData.busStation
+                            viewModel.toggleSearch(false)
                             coroutineScope.launch {
                                 bottomSheetState.bottomSheetState.expand()
                             }
@@ -271,12 +288,15 @@ fun BottomSheetContent(modifier: Modifier = Modifier,
 }
 
 @Composable
-fun TopSearchBar(modifier: Modifier = Modifier,
-                 text1: String,
-                 onText1Change: (String) -> Unit,
-                 text2: String,
-                 onText2Change: (String) -> Unit) {
-
+fun TopSearchBar(
+    modifier: Modifier = Modifier,
+    text1: String,
+    onText1Change: (String) -> Unit,
+    text2: String,
+    onText2Change: (String) -> Unit,
+    onSearchCancel: () -> Unit,
+    isSearching: Boolean
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -301,7 +321,7 @@ fun TopSearchBar(modifier: Modifier = Modifier,
                 contentDescription = null
             )
         }
-        Column {
+        Column(modifier = Modifier.weight(1f)) {
             Spacer(modifier = Modifier.height(10.dp))
             TextField(value = text1,
                 onValueChange = onText1Change,
@@ -347,6 +367,25 @@ fun TopSearchBar(modifier: Modifier = Modifier,
                     )
                 })
             Spacer(modifier = Modifier.height(10.dp))
+        }
+        if (text1.isNotEmpty() && text2.isNotEmpty()) {
+            IconButton(
+                onClick = onSearchCancel
+            ) {
+                if (isSearching) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "검색 취소",
+                        tint = MediumGray
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Search,  // 검색 아이콘 리소스 필요
+                        contentDescription = "검색",
+                        tint = LightBlue
+                    )
+                }
+            }
         }
     }
 }

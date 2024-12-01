@@ -5,6 +5,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -15,48 +17,109 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.jejutalae.R
+import com.example.jejutalae.data.bus_221_DGY
+import com.example.jejutalae.data.bus_221_JBT
+import com.example.jejutalae.data.bus_301_DGY
+import com.example.jejutalae.data.bus_301_JBT
+import com.example.jejutalae.data.bus_424_JBT
+import com.example.jejutalae.data.bus_424_JCH
 import com.example.jejutalae.ui.theme.LightBlue
 import com.example.jejutalae.ui.theme.VeryLightGray
 import com.example.jejutalae.ui.theme.MediumGray
+import java.time.Duration
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 @Composable
-fun BusScheduleScreen(navController: NavController) {
+fun BusScheduleScreen(
+    startStation: String,
+    endStation: String,
+    selectedTime: LocalTime?
+) {
+    val convertedStartStation = when (startStation) {
+        "제주시 버스터미널" -> "제주버스터미널[남]"
+        else -> startStation
+    } 
+    val convertedEndStation = when (endStation) {
+        "제주시청" -> "제주시청(아라방면)"
+        "동광양" -> "동광양[남]"
+        else -> endStation
+    }
+
+    val baseTime = selectedTime ?: LocalTime.now()
+    // 실제 버스 데이터에서 경로 찾기
+    val busRoutes = listOf(
+        bus_301_JBT to bus_301_DGY,  
+        bus_424_JBT to bus_424_JCH,
+        bus_221_JBT to bus_221_DGY
+    ).filter { (startBus, endBus) ->
+        startBus.busStop.any { it.name == convertedStartStation } && 
+        endBus.busStop.any { it.name == convertedEndStation }
+    }.map { (startBus, endBus) ->
+        // 다음 출발 시간 찾기
+        val nextDeparture = startBus.schedule.firstOrNull { it.isAfter(baseTime) }
+            ?: startBus.schedule.first()
+        
+        // 대기 시간 계산
+        val duration = Duration.between(baseTime, nextDeparture)
+        val hours = duration.toHours()
+        val minutes = duration.toMinutes() % 60
+        
+        // 대기 시간 텍스트 생성
+        val waitingTimeText = buildString {
+            if (hours > 0) {
+                append("${hours}시간 ")
+            }
+            append("${minutes}분")
+        }
+
+        BusRouteInfo(
+            busNumber = startBus.busNo.toString(),
+            startStation = startStation,
+            endStation = endStation,
+            walkTimeStart = 2,
+            busTime = 6,
+            walkTimeEnd = if (startBus.busNo == 424) 3 else 6,
+            departureTime = BusRouteInfo.formatTime(nextDeparture),
+            arrivalAfterMinutes = waitingTimeText,
+            waitingTime = duration,
+            baseTime = baseTime
+        )
+    }
+
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFFFFFFF))
+            .fillMaxWidth()
     ) {
-        // Top Bar
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(70.dp)
-                .background(Color(0xFFFFFFFF)),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Bottom
-        ) {
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = "Back", modifier = Modifier.size(30.dp))
-            }
-            Text(text = "버스 경로", fontSize = 25.sp)
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(Icons.Default.Close, contentDescription = "Close", modifier = Modifier.size(30.dp))
+        Spacer(modifier = Modifier.height(10.dp))
+
+        if (busRoutes.isEmpty()) {
+            // 경로가 없을 때 표시할 UI
+            Text(
+                text = "해당 경로의 버스가 없습니다",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                textAlign = TextAlign.Center
+            )
+        } else {
+            LazyColumn {
+                items(busRoutes) { routeInfo ->
+                    BusScheduleCard(routeInfo = routeInfo)
+                    Divider()
+                }
             }
         }
-        
-        Spacer(modifier = Modifier.height(10.dp))
-        Divider()
-
-        BusScheduleCard()
     }
 }
 
 @Composable
-fun BusScheduleCard() {
+fun BusScheduleCard(routeInfo: BusRouteInfo) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -69,13 +132,13 @@ fun BusScheduleCard() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "1시간",
+                text = routeInfo.totalTime,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
-                text = "오전 7:00 ~ 오전 9:00",
+                text = routeInfo.timeRange,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MediumGray
             )
@@ -94,8 +157,10 @@ fun BusScheduleCard() {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val (startWeight, busWeight, endWeight) = calculateWeights(routeInfo)
+                
                 Box(
-                    modifier = Modifier.weight(0.2f),
+                    modifier = Modifier.weight(startWeight),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -107,7 +172,7 @@ fun BusScheduleCard() {
                 }
 
                 Box(
-                    modifier = Modifier.weight(0.6f),
+                    modifier = Modifier.weight(busWeight),
                     contentAlignment = Alignment.Center
                 ) {
                     Row(
@@ -122,7 +187,7 @@ fun BusScheduleCard() {
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = "301",
+                            text = routeInfo.busNumber,
                             color = LightBlue,
                             fontWeight = FontWeight.Bold
                         )
@@ -130,7 +195,7 @@ fun BusScheduleCard() {
                 }
 
                 Box(
-                    modifier = Modifier.weight(0.2f),
+                    modifier = Modifier.weight(endWeight),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -148,6 +213,8 @@ fun BusScheduleCard() {
                     .fillMaxWidth()
                     .height(30.dp)
             ) {
+                val (startWeight, busWeight, endWeight) = calculateWeights(routeInfo)
+                
                 // 전체 배경 (회색 둥근 바)
                 Box(
                     modifier = Modifier
@@ -163,45 +230,44 @@ fun BusScheduleCard() {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(
-                            modifier = Modifier.weight(0.2f),
+                            modifier = Modifier.weight(startWeight),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "5분",
+                                text = "${routeInfo.walkTimeStart}분",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MediumGray
                             )
                         }
-                        Spacer(modifier = Modifier.weight(0.6f))
+                        
+                        // 중앙 버스 시간 (파란색 바)
                         Box(
-                            modifier = Modifier.weight(0.2f),
+                            modifier = Modifier
+                                .weight(busWeight)
+                                .height(30.dp)
+                                .background(
+                                    color = LightBlue,
+                                    shape = RoundedCornerShape(16.dp)
+                                ),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "5분",
+                                text = "${routeInfo.busTime}분",
+                                color = Color.White
+                            )
+                        }
+                        
+                        Box(
+                            modifier = Modifier.weight(endWeight),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "${routeInfo.walkTimeEnd}분",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MediumGray
                             )
                         }
                     }
-                }
-
-                // 중앙 버스 시간 (파란색 바)
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.6f)
-                        .height(30.dp)
-                        .align(Alignment.Center)
-                        .background(
-                            color = LightBlue,
-                            shape = RoundedCornerShape(16.dp)
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "50분",
-                        color = Color.White
-                    )
                 }
             }
         }
@@ -229,7 +295,7 @@ fun BusScheduleCard() {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "301",
+                        text = routeInfo.busNumber,
                         color = LightBlue,
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
@@ -240,7 +306,7 @@ fun BusScheduleCard() {
 
                 // 시간
                 Text(
-                    text = "50분",
+                    text = "${routeInfo.busTime}분",
                     color = LightBlue,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold,
@@ -289,7 +355,7 @@ fun BusScheduleCard() {
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "제주 버스 터미널",
+                            text = routeInfo.startStation,
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold
                         )
@@ -298,17 +364,17 @@ fun BusScheduleCard() {
                             modifier = Modifier.padding(vertical = 8.dp)
                         ) {
                             Text(
-                                text = "오전 07:10",
+                                text = routeInfo.departureTime,
                                 style = MaterialTheme.typography.bodyMedium
                             )
                             Row {
                                 Text(
-                                    text = "오전 7:00로 부터 ",
+                                    text = "${BusRouteInfo.formatTime(routeInfo.baseTime)}로 부터 ",
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MediumGray
                                 )
                                 Text(
-                                    text = "10분 후 도착",
+                                    text = routeInfo.arrivalAfterMinutes + " 후 도착",
                                     style = MaterialTheme.typography.bodySmall,
                                     color = Color.Red
                                 )
@@ -316,7 +382,7 @@ fun BusScheduleCard() {
                         }
 
                         Text(
-                            text = "제주 시청",
+                            text = routeInfo.endStation,
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold
                         )
@@ -325,4 +391,14 @@ fun BusScheduleCard() {
             }
         }
     }
+}
+
+@Composable
+private fun calculateWeights(routeInfo: BusRouteInfo): Triple<Float, Float, Float> {
+    val totalTime = (routeInfo.walkTimeStart + routeInfo.busTime + routeInfo.walkTimeEnd).toFloat()
+    return Triple(
+        routeInfo.walkTimeStart / totalTime,
+        routeInfo.busTime / totalTime,
+        routeInfo.walkTimeEnd / totalTime
+    )
 }
