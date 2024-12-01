@@ -124,7 +124,8 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
             if (viewModel.isSearching) {
                 BusScheduleScreen(
                     startStation = viewModel.text1,
-                    endStation = viewModel.text2
+                    endStation = viewModel.text2,
+                    selectedTime = selectedTime
                 )
             } else {
                 BottomSheetContent(

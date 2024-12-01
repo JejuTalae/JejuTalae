@@ -47,7 +47,7 @@ val busStops_424:List<BusStop> = listOf(
     BusStop("14","제주버스터미널(북)", ""),
 )
 val busStops_221:List<BusStop> = listOf(
-    BusStop("1","제주버스터미널", ""),
+    BusStop("1","제주버스터미널[남]", ""),
     BusStop("2","남서광마을입구", ""),
     BusStop("3","탐라장애인 종합복지관[남]", ""),
     BusStop("4","동광양[남]", ""),

@@ -22,54 +22,74 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.jejutalae.R
+import com.example.jejutalae.data.bus_221_DGY
+import com.example.jejutalae.data.bus_221_JBT
+import com.example.jejutalae.data.bus_301_DGY
+import com.example.jejutalae.data.bus_301_JBT
+import com.example.jejutalae.data.bus_424_JBT
+import com.example.jejutalae.data.bus_424_JCH
 import com.example.jejutalae.ui.theme.LightBlue
 import com.example.jejutalae.ui.theme.VeryLightGray
 import com.example.jejutalae.ui.theme.MediumGray
+import java.time.Duration
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun BusScheduleScreen(
     startStation: String,
-    endStation: String
+    endStation: String,
+    selectedTime: LocalTime?
 ) {
+    val convertedStartStation = when (startStation) {
+        "제주시 버스터미널" -> "제주버스터미널[남]"
+        else -> startStation
+    } 
+    val convertedEndStation = when (endStation) {
+        "제주시청" -> "제주시청(아라방면)"
+        "동광양" -> "동광양[남]"
+        else -> endStation
+    }
+
+    val baseTime = selectedTime ?: LocalTime.now()
+    // 실제 버스 데이터에서 경로 찾기
     val busRoutes = listOf(
+        bus_301_JBT to bus_301_DGY,  
+        bus_424_JBT to bus_424_JCH,
+        bus_221_JBT to bus_221_DGY
+    ).filter { (startBus, endBus) ->
+        startBus.busStop.any { it.name == convertedStartStation } && 
+        endBus.busStop.any { it.name == convertedEndStation }
+    }.map { (startBus, endBus) ->
+        // 다음 출발 시간 찾기
+        val nextDeparture = startBus.schedule.firstOrNull { it.isAfter(baseTime) }
+            ?: startBus.schedule.first()
+        
+        // 대기 시간 계산
+        val duration = Duration.between(baseTime, nextDeparture)
+        val hours = duration.toHours()
+        val minutes = duration.toMinutes() % 60
+        
+        // 대기 시간 텍스트 생성
+        val waitingTimeText = buildString {
+            if (hours > 0) {
+                append("${hours}시간 ")
+            }
+            append("${minutes}분")
+        }
+
         BusRouteInfo(
-            busNumber = "301",
-            startStation = "제주시 버스터미널",
-            endStation = "동광양",
-            totalTime = "14분",
-            timeRange = "오후 1:03 ~ 오후 1:17",
+            busNumber = startBus.busNo.toString(),
+            startStation = startStation,
+            endStation = endStation,
             walkTimeStart = 2,
             busTime = 6,
-            walkTimeEnd = 6,
-            departureTime = "오후 1:03",
-            arrivalAfterMinutes = "27분"
-        ),
-        BusRouteInfo(
-            busNumber = "424",
-            startStation = "제주시 버스터미널",
-            endStation = "제주시청",
-            totalTime = "11분",
-            timeRange = "오후 1:09 ~ 오후 1:20",
-            walkTimeStart = 2,
-            busTime = 6,
-            walkTimeEnd = 3,
-            departureTime = "오후 1:09",
-            arrivalAfterMinutes = "33분"
-        ),
-        BusRouteInfo(
-            busNumber = "221",
-            startStation = "제주시 버스터미널",
-            endStation = "동광양",
-            totalTime = "14분",
-            timeRange = "오후 12:44 ~ 오후 12:58",
-            walkTimeStart = 2,
-            busTime = 6,
-            walkTimeEnd = 6,
-            departureTime = "오후 12:44",
-            arrivalAfterMinutes = "8분"
+            walkTimeEnd = if (startBus.busNo == 424) 3 else 6,
+            departureTime = BusRouteInfo.formatTime(nextDeparture),
+            arrivalAfterMinutes = waitingTimeText,
+            waitingTime = duration,
+            baseTime = baseTime
         )
-    ).filter { route ->
-        route.startStation == startStation && route.endStation == endStation
     }
 
     Column(
@@ -349,7 +369,7 @@ fun BusScheduleCard(routeInfo: BusRouteInfo) {
                             )
                             Row {
                                 Text(
-                                    text = "오후 12:36로 부터 ",
+                                    text = "${BusRouteInfo.formatTime(routeInfo.baseTime)}로 부터 ",
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MediumGray
                                 )
