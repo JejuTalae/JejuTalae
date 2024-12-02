@@ -1,11 +1,9 @@
 package com.example.jejutalae.screen.homescreen
 
 import android.graphics.BlurMaskFilter
-import android.hardware.lights.Light
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,13 +26,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,17 +49,15 @@ import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.jejutalae.R
 import com.example.jejutalae.data.BusStation
 import com.example.jejutalae.data.markerDataList
 import com.example.jejutalae.screen.busschedule.BusScheduleScreen
-import com.example.jejutalae.ui.theme.AlmostWhite
 import com.example.jejutalae.ui.theme.LightBlue
 import com.example.jejutalae.ui.theme.MediumGray
 import com.example.jejutalae.ui.theme.SoftBlue
@@ -374,12 +368,20 @@ fun TopSearchBar(
                 ),
                 textStyle = Typography.labelSmall.copy(color = Color.Black),
                 trailingIcon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.location),
-                        contentDescription = "ReverseGeocoder",
-                        modifier = Modifier.size(24.dp),
-                        tint = Color.Unspecified
-                    )
+//                    Icon(
+//                        painter = painterResource(id = R.drawable.location),
+//                        contentDescription = "ReverseGeocoder",
+//                        modifier = Modifier.size(24.dp),
+//                        tint = Color.Unspecified
+//                    )
+                    Icon(imageVector = ImageVector.vectorResource(R.drawable.delevesvg),
+                    contentDescription = null,
+                    tint = Color.Unspecified,
+                    modifier = Modifier
+                        .size(22.dp)
+                        .clickable {
+                            onText2Change("")
+                        })
                 })
             Spacer(modifier = Modifier.height(10.dp))
         }
