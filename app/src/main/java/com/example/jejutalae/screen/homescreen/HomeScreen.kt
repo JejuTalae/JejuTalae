@@ -1,6 +1,7 @@
 package com.example.jejutalae.screen.homescreen
 
 import android.graphics.BlurMaskFilter
+import android.hardware.lights.Light
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -143,7 +144,7 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(onClick = {isDialogVisible = true})
+                    .clickable(onClick = { isDialogVisible = true })
                     .background(color = SoftBlue),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -251,8 +252,22 @@ fun BottomSheetContent(modifier: Modifier = Modifier,
     ) {
         Text(busStation?.name ?: "정류소 선택하기", style = Typography.titleLarge)
         Spacer(modifier = Modifier.height(10.dp))
-        Text(busStation?.direction ?: "마커를 클릭해주세요", style = Typography.labelSmall)
-        Spacer(modifier = Modifier.height(15.dp))
+            Row {
+                if(busStation?.direction == null){
+                    Text("마커(", style = Typography.labelSmall)
+                    Icon(
+                        painter = painterResource(id = R.drawable.marker),
+                        contentDescription = "Marker",
+                        modifier = Modifier.size(20.dp),
+                        tint = LightBlue
+                    )
+                    Text(")를 클릭해주세요", style = Typography.labelSmall)
+                }
+                else{
+                    Text(busStation?.direction, style = Typography.labelSmall)
+                }
+            }
+            Spacer(modifier = Modifier.height(15.dp))
         if(busStation != null) {
             Row() {
                 Button(
@@ -376,13 +391,15 @@ fun TopSearchBar(
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = "검색 취소",
-                        tint = MediumGray
+                        tint = MediumGray,
+                        modifier = Modifier.size(30.dp)
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Default.Search,  // 검색 아이콘 리소스 필요
                         contentDescription = "검색",
-                        tint = LightBlue
+                        tint = LightBlue,
+                        modifier = Modifier.size(30.dp)
                     )
                 }
             }

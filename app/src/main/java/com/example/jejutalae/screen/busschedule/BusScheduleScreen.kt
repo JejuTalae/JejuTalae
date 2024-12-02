@@ -31,6 +31,7 @@ import com.example.jejutalae.data.bus_424_JCH
 import com.example.jejutalae.ui.theme.LightBlue
 import com.example.jejutalae.ui.theme.VeryLightGray
 import com.example.jejutalae.ui.theme.MediumGray
+import com.example.jejutalae.ui.theme.Typography
 import java.time.Duration
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -105,7 +106,8 @@ fun BusScheduleScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                style = Typography.labelSmall
             )
         } else {
             LazyColumn {
@@ -164,7 +166,7 @@ fun BusScheduleCard(routeInfo: BusRouteInfo) {
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.location),
+                        painter = painterResource(id = R.drawable.walking),
                         contentDescription = "도보",
                         tint = MediumGray,
                         modifier = Modifier.size(20.dp)
@@ -180,7 +182,7 @@ fun BusScheduleCard(routeInfo: BusRouteInfo) {
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.location),
+                            painter = painterResource(id = R.drawable.bus_station),
                             contentDescription = "버스",
                             tint = LightBlue,
                             modifier = Modifier.size(20.dp)
@@ -199,7 +201,7 @@ fun BusScheduleCard(routeInfo: BusRouteInfo) {
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.location),
+                        painter = painterResource(id = R.drawable.walking),
                         contentDescription = "도보",
                         tint = MediumGray,
                         modifier = Modifier.size(20.dp)
