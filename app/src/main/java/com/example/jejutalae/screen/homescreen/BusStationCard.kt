@@ -32,26 +32,30 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun BusStationCard(modifier: Modifier = Modifier,
-                   bus: Bus,
-                   selectedTime: LocalTime?,
-                   navController: NavController,
-                   busStationName: String
+fun BusStationCard(
+    modifier: Modifier = Modifier,
+    bus: Bus,
+    selectedTime: LocalTime?,
+    navController: NavController,
+    busStationName: String,
+    isRealTime: Boolean
 ) {
     val nextArrivalTime = selectedTime?.let { time ->
         bus.schedule.firstOrNull { it.isAfter(time) }
     }
     Row(modifier = Modifier
         .fillMaxWidth()
-        .padding(start = 25.dp)
+        .height(117.dp)
+        .padding(start = 30.dp)
         .clickable {
             // 버스 정보를 전달하면서 BusStopScreen으로 이동
             navController.navigate("busStop/${bus.id}/$busStationName")
         },
+        verticalAlignment = Alignment.CenterVertically
         ) {
         Box(
             modifier = Modifier
-                .size(55.dp)
+                .size(60.dp)
                 .border(
                     width = 5.dp,
                     color = LightBlue,
@@ -86,11 +90,8 @@ fun BusStationCard(modifier: Modifier = Modifier,
                             ),
                             color = MediumGray
                         )
-                    } else if (nextArrivalTime != null) {
-                        val duration = Duration.between(selectedTime, nextArrivalTime)
-                        val hours = duration.toHours()
-                        val minutes = duration.toMinutes() % 60
-
+                    }
+                    else if(isRealTime == true) {
                         Text(
                             text = "${selectedTime.format(DateTimeFormatter.ofPattern("a h:mm"))}로부터 ",
                             style = TextStyle(
@@ -101,7 +102,31 @@ fun BusStationCard(modifier: Modifier = Modifier,
                             ),
                             color = MediumGray
                         )
-
+                        Text(
+                            text = "도착예정 정보없음",
+                            style = TextStyle(
+                                fontFamily = nanumbarungothic,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp,
+                                lineHeight = 28.sp,
+                                color = MediumGray
+                            ),
+                        )
+                    }
+                     else if (nextArrivalTime != null) {
+                        val duration = Duration.between(selectedTime, nextArrivalTime)
+                        val hours = duration.toHours()
+                        val minutes = duration.toMinutes() % 60
+                            Text(
+                                text = "${selectedTime.format(DateTimeFormatter.ofPattern("a h:mm"))}로부터 ",
+                                style = TextStyle(
+                                    fontFamily = nanumbarungothic,
+                                    fontWeight = FontWeight.Normal,
+                                    fontSize = 13.sp,
+                                    lineHeight = 28.sp,
+                                    color = MediumGray
+                                ),
+                            )
                         val timeDifferenceText = buildString {
                             if (hours > 0) {
                                 append("${hours}시간 ")

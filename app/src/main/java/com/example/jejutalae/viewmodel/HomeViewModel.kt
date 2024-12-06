@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.StateFlow
 import java.time.LocalTime
 
 class HomeViewModel : ViewModel() {
-    var text1 by mutableStateOf("제주국제공항")
-    var text2 by mutableStateOf("오설록 티 뮤지엄")
+    var text1 by mutableStateOf("")
+    var text2 by mutableStateOf("")
     var isSearching by mutableStateOf(false)
 
     private val _selectedTime = MutableStateFlow<LocalTime?>(null)

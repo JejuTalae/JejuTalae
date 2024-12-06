@@ -1,26 +1,46 @@
 package com.example.jejutalae.screen.busschedule
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.jejutalae.R
 import com.example.jejutalae.data.bus_221_DGY
 import com.example.jejutalae.data.bus_221_JBT
@@ -28,13 +48,15 @@ import com.example.jejutalae.data.bus_301_DGY
 import com.example.jejutalae.data.bus_301_JBT
 import com.example.jejutalae.data.bus_424_JBT
 import com.example.jejutalae.data.bus_424_JCH
+import com.example.jejutalae.ui.theme.BrightRed
 import com.example.jejutalae.ui.theme.LightBlue
-import com.example.jejutalae.ui.theme.VeryLightGray
 import com.example.jejutalae.ui.theme.MediumGray
+import com.example.jejutalae.ui.theme.PureWhite
 import com.example.jejutalae.ui.theme.Typography
+import com.example.jejutalae.ui.theme.VeryLightGray
+import com.example.jejutalae.ui.theme.nanumbarungothic
 import java.time.Duration
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun BusScheduleScreen(
@@ -122,6 +144,7 @@ fun BusScheduleScreen(
 
 @Composable
 fun BusScheduleCard(routeInfo: BusRouteInfo) {
+    var isRealTime by remember { mutableStateOf(true) }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -303,7 +326,6 @@ fun BusScheduleCard(routeInfo: BusRouteInfo) {
                         fontSize = 16.sp
                     )
                 }
-
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // 시간
@@ -375,11 +397,29 @@ fun BusScheduleCard(routeInfo: BusRouteInfo) {
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MediumGray
                                 )
+                                if(isRealTime == false)
                                 Text(
                                     text = routeInfo.arrivalAfterMinutes + " 후 도착",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = Color.Red
+                                    style = TextStyle(
+                                        fontFamily = nanumbarungothic,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp,
+                                        lineHeight = 28.sp,
+                                        color = BrightRed
+                                    ),
                                 )
+                                else{
+                                    Text(
+                                        text = "도착예정 정보없음",
+                                        style = TextStyle(
+                                            fontFamily = nanumbarungothic,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 16.sp,
+                                            lineHeight = 28.sp,
+                                            color = MediumGray
+                                        ),
+                                    )
+                                }
                             }
                         }
 
@@ -389,9 +429,41 @@ fun BusScheduleCard(routeInfo: BusRouteInfo) {
                             fontWeight = FontWeight.Bold
                         )
                     }
+                    Spacer(modifier = Modifier.width(20.dp))
                 }
             }
         }
+    }
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.size(height = 23.dp, width = 64.dp).absoluteOffset(x = 330.dp, y = (-115).dp))
+    {
+        Button(
+            modifier = Modifier.size(height = 23.dp, width = 64.dp),
+            onClick = { isRealTime = !isRealTime },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = PureWhite,
+                contentColor = LightBlue,
+                disabledContentColor = PureWhite,
+                disabledContainerColor = MediumGray,
+            ),
+            border = if (isRealTime) BorderStroke(1.dp, LightBlue)
+            else BorderStroke(1.dp, MediumGray),
+        ) {
+        }
+        Text(
+            text = if (isRealTime) "실시간" else "시간표",
+            style = if (isRealTime) Typography.titleMedium.copy(
+                fontSize = 12.sp,
+                lineHeight = 28.sp,
+                color = LightBlue
+            )
+            else Typography.titleMedium.copy(
+                fontSize = 12.sp,
+                lineHeight = 28.sp,
+                color = MediumGray
+            ),
+        )
     }
 }
 

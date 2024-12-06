@@ -4,12 +4,14 @@ import android.graphics.BlurMaskFilter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -21,6 +23,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -52,14 +55,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.jejutalae.R
 import com.example.jejutalae.data.BusStation
 import com.example.jejutalae.data.markerDataList
 import com.example.jejutalae.screen.busschedule.BusScheduleScreen
+import com.example.jejutalae.ui.theme.AlmostWhite
 import com.example.jejutalae.ui.theme.LightBlue
 import com.example.jejutalae.ui.theme.MediumGray
+import com.example.jejutalae.ui.theme.PureWhite
 import com.example.jejutalae.ui.theme.SoftBlue
 import com.example.jejutalae.ui.theme.Typography
 import com.example.jejutalae.viewmodel.HomeViewModel
@@ -102,8 +108,11 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
 
     val selectedBusStation = remember { mutableStateOf<BusStation?>(null) }
 
-    BottomSheetScaffold(scaffoldState = bottomSheetState,
+    BottomSheetScaffold(
+        scaffoldState = bottomSheetState,
         modifier = modifier.fillMaxSize(),
+        sheetContainerColor = PureWhite,
+        sheetContentColor = Color.Black,
         topBar = {
             TopSearchBar(
                 modifier = Modifier.statusBarsPadding(),
@@ -131,9 +140,9 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
                 )
             }
         },
-        sheetPeekHeight = 170.dp
+        sheetPeekHeight = 170.dp,
     ) { contentPadding ->
-        Column(modifier = Modifier.padding(contentPadding)) {
+        Column(modifier = Modifier.padding(contentPadding.calculateTopPadding()).padding(bottom = 155.dp)) {
             val (selectedOption, onOptionSelected) = remember { mutableStateOf(2) }
             Row(
                 modifier = Modifier
@@ -240,29 +249,64 @@ fun BottomSheetContent(modifier: Modifier = Modifier,
                        selectedTime: LocalTime?,
                        viewModel: HomeViewModel
 ) {
+    var isRealTime by remember { mutableStateOf(true) }
+    if (busStation != null) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.size(height = 23.dp, width = 64.dp).offset(x = 330.dp, y = (-30.dp))
+        ) {
+            Button(
+                modifier = Modifier.size(height = 23.dp, width = 64.dp),
+                onClick = { isRealTime = !isRealTime },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = PureWhite,
+                    contentColor = LightBlue,
+                    disabledContentColor = PureWhite,
+                    disabledContainerColor = MediumGray,
+                ),
+                border = if (isRealTime) BorderStroke(1.dp, LightBlue)
+                else BorderStroke(1.dp, MediumGray),
+            ) {
+            }
+            Text(
+                text = if (isRealTime) "실시간" else "시간표",
+                style = if (isRealTime) Typography.titleMedium.copy(
+                    fontSize = 12.sp,
+                    lineHeight = 28.sp,
+                    color = LightBlue
+                )
+                else Typography.titleMedium.copy(
+                    fontSize = 12.sp,
+                    lineHeight = 28.sp,
+                    color = MediumGray
+                ),
+            )
+        }
+    }
+    val modifier: Modifier = if(busStation == null) Modifier else Modifier.offset(y = (-15.dp))
+    Column(modifier = modifier){
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(busStation?.name ?: "정류소 선택하기", style = Typography.titleLarge)
         Spacer(modifier = Modifier.height(10.dp))
-            Row {
-                if(busStation?.direction == null){
-                    Text("마커(", style = Typography.labelSmall)
-                    Icon(
-                        painter = painterResource(id = R.drawable.marker),
-                        contentDescription = "Marker",
-                        modifier = Modifier.size(20.dp),
-                        tint = LightBlue
-                    )
-                    Text(")를 클릭해주세요", style = Typography.labelSmall)
-                }
-                else{
-                    Text(busStation?.direction, style = Typography.labelSmall)
-                }
+        Row {
+            if (busStation?.direction == null) {
+                Text("마커(", style = Typography.labelSmall)
+                Icon(
+                    painter = painterResource(id = R.drawable.marker),
+                    contentDescription = "Marker",
+                    modifier = Modifier.size(20.dp),
+                    tint = LightBlue
+                )
+                Text(")를 클릭해주세요", style = Typography.labelSmall)
+            } else {
+                Text(busStation.direction, style = Typography.labelSmall)
             }
-            Spacer(modifier = Modifier.height(15.dp))
-        if(busStation != null) {
+        }
+        Spacer(modifier = Modifier.height(15.dp))
+        if (busStation != null) {
             Row() {
                 Button(
                     onClick = { viewModel.text1 = busStation.name },
@@ -285,15 +329,20 @@ fun BottomSheetContent(modifier: Modifier = Modifier,
                 }
             }
         }
-        Spacer(modifier = Modifier.height(5.dp))
+        Spacer(modifier = Modifier.height(20.dp))
     }
+        Divider(modifier= Modifier.width(350.dp).align(Alignment.CenterHorizontally))
     Column(modifier = Modifier.fillMaxWidth()) {
         busStation?.busList?.forEach { bus ->
-            BusStationCard(bus = bus, selectedTime = selectedTime, navController = navController,
-                busStationName = busStation.name)
+            BusStationCard(
+                bus = bus, selectedTime = selectedTime, navController = navController,
+                busStationName = busStation.name, isRealTime = isRealTime
+            )
+            Box(modifier = Modifier.fillMaxWidth().height(10.dp).background(AlmostWhite))
             Spacer(modifier = Modifier.height(10.dp))
         }
     }
+}
 }
 
 @Composable
@@ -333,6 +382,7 @@ fun TopSearchBar(
         Column(modifier = Modifier.weight(1f)) {
             Spacer(modifier = Modifier.height(10.dp))
             TextField(value = text1,
+                label = {Text("출발 위치")},
                 onValueChange = onText1Change,
                 shape = RoundedCornerShape(10.dp), // 네 모서리 둥글게 설정
                 colors = TextFieldDefaults.colors(
@@ -356,6 +406,7 @@ fun TopSearchBar(
                 })
             Spacer(modifier = Modifier.height(10.dp))
             TextField(value = text2,
+                label = {Text("도착 위치")},
                 onValueChange = onText2Change,
                 shape = RoundedCornerShape(10.dp), // 네 모서리 둥글게 설정
                 colors = TextFieldDefaults.colors(
